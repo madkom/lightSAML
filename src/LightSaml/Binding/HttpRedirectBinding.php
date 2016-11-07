@@ -68,7 +68,7 @@ class HttpRedirectBinding extends AbstractBinding
         $deserializationContext = $context->getDeserializationContext();
         $message = SamlMessage::fromXML($msg, $deserializationContext);
 
-        $this->loadRelayState($message, $data);
+        $this->loadRelayState($context, $data);
         $this->loadSignature($message, $data);
 
         $context->setMessage($message);
@@ -126,10 +126,10 @@ class HttpRedirectBinding extends AbstractBinding
         }
     }
 
-    protected function loadRelayState(SamlMessage $message, array $data)
+    protected function loadRelayState(MessageContext $context, array $data)
     {
         if (array_key_exists('RelayState', $data)) {
-            $message->setRelayState($data['RelayState']);
+            $context->setRelayState($data['RelayState']);
         }
     }
 
@@ -161,7 +161,7 @@ class HttpRedirectBinding extends AbstractBinding
 
         $xml = $this->getMessageEncodedXml($message, $context);
         $msg = $this->addMessageToUrl($message, $xml);
-        $this->addRelayStateToUrl($msg, $message);
+        $this->addRelayStateToUrl($msg, $context);
         $this->addSignatureToUrl($msg, $signature);
 
         return $this->getDestinationUrl($msg, $message, $destination);
@@ -208,13 +208,13 @@ class HttpRedirectBinding extends AbstractBinding
     }
 
     /**
-     * @param string      $msg
-     * @param SamlMessage $message
+     * @param string         $msg
+     * @param MessageContext $context
      */
-    protected function addRelayStateToUrl(&$msg, SamlMessage $message)
+    protected function addRelayStateToUrl(&$msg, MessageContext $context)
     {
-        if ($message->getRelayState() !== null) {
-            $msg .= '&RelayState='.urlencode($message->getRelayState());
+        if ($context->getRelayState() !== null) {
+            $msg .= '&RelayState='.urlencode($context->getRelayState());
         }
     }
 

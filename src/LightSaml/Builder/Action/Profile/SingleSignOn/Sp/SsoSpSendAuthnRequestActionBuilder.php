@@ -20,7 +20,7 @@ use LightSaml\Action\Profile\Outbound\Message\MessageIssueInstantAction;
 use LightSaml\Action\Profile\Outbound\Message\ResolveEndpointIdpSsoAction;
 use LightSaml\Action\Profile\Outbound\Message\SaveRequestStateAction;
 use LightSaml\Action\Profile\Outbound\Message\SendMessageAction;
-use LightSaml\Action\Profile\Outbound\Message\SetRelayStateAction;
+use LightSaml\Action\Profile\Outbound\SetRelayStateAction;
 use LightSaml\Action\Profile\Outbound\Message\SignMessageAction;
 use LightSaml\Action\Profile\Outbound\Message\MessageVersionAction;
 use LightSaml\Builder\Action\Profile\AbstractProfileActionBuilder;
@@ -29,9 +29,6 @@ use LightSaml\SamlConstants;
 
 class SsoSpSendAuthnRequestActionBuilder extends AbstractProfileActionBuilder
 {
-    /**
-     * @return void
-     */
     protected function doInitialize()
     {
         // Create AuthnRequest

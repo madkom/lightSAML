@@ -42,8 +42,8 @@ class HttpPostBinding extends AbstractBinding
         $type = $message instanceof AbstractRequest ? 'SAMLRequest' : 'SAMLResponse';
 
         $data = array($type => $msgStr);
-        if ($message->getRelayState()) {
-            $data['RelayState'] = $message->getRelayState();
+        if ($context->getRelayState()) {
+            $data['RelayState'] = $context->getRelayState();
         }
 
         $result = new SamlPostResponse($destination, $data);
@@ -75,7 +75,7 @@ class HttpPostBinding extends AbstractBinding
         $result = SamlMessage::fromXML($msg, $deserializationContext);
 
         if (array_key_exists('RelayState', $post)) {
-            $result->setRelayState($post['RelayState']);
+            $context->setRelayState($post['RelayState']);
         }
 
         $context->setMessage($result);

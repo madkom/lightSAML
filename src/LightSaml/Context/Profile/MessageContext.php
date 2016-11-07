@@ -32,6 +32,9 @@ class MessageContext extends AbstractProfileContext
     /** @var string */
     private $bindingType;
 
+    /** @var string|null */
+    protected $relayState;
+
     /**
      * @return string
      */
@@ -90,6 +93,26 @@ class MessageContext extends AbstractProfileContext
         $this->artifact = $artifact;
 
         return $this;
+    }
+
+    /**
+     * @param null|string $relayState
+     *
+     * @return SamlMessage
+     */
+    public function setRelayState($relayState)
+    {
+        $this->relayState = $relayState;
+
+        return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function getRelayState()
+    {
+        return $this->relayState;
     }
 
     /**

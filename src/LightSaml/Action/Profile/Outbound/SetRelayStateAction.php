@@ -9,11 +9,10 @@
  * with this source code in the file LICENSE.
  */
 
-namespace LightSaml\Action\Profile\Outbound\Message;
+namespace LightSaml\Action\Profile\Outbound;
 
 use LightSaml\Action\Profile\AbstractProfileAction;
 use LightSaml\Context\Profile\Helper\LogHelper;
-use LightSaml\Context\Profile\Helper\MessageContextHelper;
 use LightSaml\Context\Profile\ProfileContext;
 
 class SetRelayStateAction extends AbstractProfileAction
@@ -22,11 +21,11 @@ class SetRelayStateAction extends AbstractProfileAction
     {
         if ($context->getRelayState()) {
             $this->logger->debug(
-                sprintf('RelayState from context set to outbound message: "%s"', $context->getRelayState()),
+                sprintf('RelayState from context set to outbound context: "%s"', $context->getRelayState()),
                 LogHelper::getActionContext($context, $this)
             );
-            MessageContextHelper::asSamlMessage($context->getOutboundContext())
-                ->setRelayState($context->getRelayState());
+
+            $context->getOutboundContext()->setRelayState($context->getRelayState());
         }
     }
 }

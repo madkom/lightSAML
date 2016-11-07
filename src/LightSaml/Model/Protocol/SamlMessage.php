@@ -44,9 +44,6 @@ abstract class SamlMessage extends AbstractSamlModel
     /** @var Signature|null */
     protected $signature;
 
-    /** @var string|null */
-    protected $relayState;
-
     /**
      * @param string                 $xml
      * @param DeserializationContext $context
@@ -85,8 +82,8 @@ abstract class SamlMessage extends AbstractSamlModel
             'LogoutResponse' => '\LightSaml\Model\Protocol\LogoutResponse',
             'LogoutRequest' => '\LightSaml\Model\Protocol\LogoutRequest',
             'Response' => '\LightSaml\Model\Protocol\Response',
-            'ArtifactResponse' => null,
-            'ArtifactResolve' => null,
+            'ArtifactResponse' => '\LightSaml\Model\Protocol\ArtifactResponse',
+            'ArtifactResolve' => '\LightSaml\Model\Protocol\ArtifactResolve',
         );
 
         $rootElementName = $node->localName;
@@ -272,30 +269,8 @@ abstract class SamlMessage extends AbstractSamlModel
     }
 
     /**
-     * @param null|string $relayState
-     *
-     * @return SamlMessage
-     */
-    public function setRelayState($relayState)
-    {
-        $this->relayState = $relayState;
-
-        return $this;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getRelayState()
-    {
-        return $this->relayState;
-    }
-
-    /**
      * @param \DOMNode             $parent
      * @param SerializationContext $context
-     *
-     * @return void
      */
     public function serialize(\DOMNode $parent, SerializationContext $context)
     {
