@@ -23,7 +23,6 @@ class HttpRedirectBindingFunctionalTest extends \PHPUnit_Framework_TestCase
         $expectedDestination = 'https://destination.com/auth';
 
         $request = $this->getAuthnRequest();
-        $request->setRelayState($expectedRelayState);
         $request->setDestination($expectedDestination);
 
         $biding = new HttpRedirectBinding();
@@ -44,6 +43,7 @@ class HttpRedirectBindingFunctionalTest extends \PHPUnit_Framework_TestCase
 
         $messageContext = new MessageContext();
         $messageContext->setMessage($request);
+        $messageContext->setRelayState($expectedRelayState);
 
         /** @var RedirectResponse $response */
         $response = $biding->send($messageContext);
@@ -146,7 +146,7 @@ class HttpRedirectBindingFunctionalTest extends \PHPUnit_Framework_TestCase
         $message = $messageContext->getMessage();
 
         $this->assertInstanceOf('LightSaml\Model\Protocol\AuthnRequest', $message);
-        $this->assertEquals($expectedRelayState, $message->getRelayState());
+        $this->assertEquals($expectedRelayState, $messageContext->getRelayState());
         $this->assertEquals('_8dcc6985f6d9f385f0bbd4562ef848ef3ae78d87d7', $message->getID());
         $this->assertEquals('2014-01-01T12:00:00Z', $message->getIssueInstantString());
         $this->assertNotNull($message->getSignature());

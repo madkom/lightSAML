@@ -1,8 +1,8 @@
 <?php
 
-namespace LightSaml\Tests\Action\Profile\Outbound\Message;
+namespace LightSaml\Tests\Action\Profile\Outbound;
 
-use LightSaml\Action\Profile\Outbound\Message\ForwardRelayStateAction;
+use LightSaml\Action\Profile\Outbound\ForwardRelayStateAction;
 use LightSaml\Context\Profile\ProfileContext;
 use LightSaml\Model\Protocol\AuthnRequest;
 use LightSaml\Model\Protocol\Response;
@@ -33,10 +33,10 @@ class ForwardRelayStateActionTest extends \PHPUnit_Framework_TestCase
         $context->getInboundContext()->setMessage($inboundMessage = new AuthnRequest());
         $context->getOutboundContext()->setMessage($outboundMessage = new Response());
 
-        $inboundMessage->setRelayState($relayState = '123');
+        $context->getInboundContext()->setRelayState($relayState = '123');
 
         $action->execute($context);
 
-        $this->assertEquals($relayState, $context->getOutboundMessage()->getRelayState());
+        $this->assertEquals($relayState, $context->getOutboundContext()->getRelayState());
     }
 }

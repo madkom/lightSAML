@@ -20,7 +20,6 @@ class HttpPostBindingFunctionalTest extends \PHPUnit_Framework_TestCase
         $expectedDestination = 'https://destination.com/auth';
 
         $request = $this->getAuthnRequest();
-        $request->setRelayState($expectedRelayState);
         $request->setDestination($expectedDestination);
 
         $biding = new HttpPostBinding();
@@ -41,6 +40,7 @@ class HttpPostBindingFunctionalTest extends \PHPUnit_Framework_TestCase
 
         $messageContext = new MessageContext();
         $messageContext->setMessage($request);
+        $messageContext->setRelayState($expectedRelayState);
 
         /** @var \LightSaml\Binding\SamlPostResponse $response */
         $response = $biding->send($messageContext);
@@ -116,7 +116,7 @@ class HttpPostBindingFunctionalTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf('LightSaml\Model\Protocol\AuthnRequest', $message);
 
-        $this->assertEquals($expectedRelayState, $message->getRelayState());
+        $this->assertEquals($expectedRelayState, $messageContext->getRelayState());
 
         $this->assertNotNull($message->getSignature());
         $this->assertInstanceOf('LightSaml\Model\XmlDSig\AbstractSignatureReader', $message->getSignature());
