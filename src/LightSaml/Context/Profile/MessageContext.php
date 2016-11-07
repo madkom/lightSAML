@@ -98,7 +98,7 @@ class MessageContext extends AbstractProfileContext
     /**
      * @param null|string $relayState
      *
-     * @return SamlMessage
+     * @return MessageContext
      */
     public function setRelayState($relayState)
     {
