@@ -21,6 +21,11 @@ use LightSaml\Model\Protocol\SamlMessage;
 
 class MessageContext extends AbstractProfileContext
 {
+    /**
+     * @var string
+     */
+    private $artifact;
+
     /** @var SamlMessage */
     private $message;
 
@@ -63,6 +68,26 @@ class MessageContext extends AbstractProfileContext
     public function setMessage(SamlMessage $message = null)
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getArtifact()
+    {
+        return $this->artifact;
+    }
+
+    /**
+     * @param string $artifact
+     *
+     * @return MessageContext
+     */
+    public function setArtifact($artifact)
+    {
+        $this->artifact = $artifact;
 
         return $this;
     }
