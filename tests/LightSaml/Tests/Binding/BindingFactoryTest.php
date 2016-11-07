@@ -32,14 +32,11 @@ class BindingFactoryTest extends \PHPUnit_Framework_TestCase
         $factory->create(SamlConstants::BINDING_SAML2_SOAP);
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage Artifact binding not implemented
-     */
-    public function test__create_throws_not_implemented_error_for_artifact()
+    public function test__create_http_artifact()
     {
         $factory = new BindingFactory();
-        $factory->create(SamlConstants::BINDING_SAML2_HTTP_ARTIFACT);
+        $binding = $factory->create(SamlConstants::BINDING_SAML2_HTTP_ARTIFACT);
+        $this->assertInstanceOf('LightSaml\Binding\HttpArtifactBinding', $binding);
     }
 
     /**
@@ -129,6 +126,20 @@ class BindingFactoryTest extends \PHPUnit_Framework_TestCase
         $request = $this->createHttpPostRequest();
         $factory = new BindingFactory();
         $this->assertInstanceOf('LightSaml\Binding\HttpPostBinding', $factory->getBindingByRequest($request));
+    }
+
+    public function test__get_binding_by_request_http_artifact_post()
+    {
+        $request = $this->createArtifactPostRequest();
+        $factory = new BindingFactory();
+        $this->assertInstanceOf('LightSaml\Binding\HttpArtifactBinding', $factory->getBindingByRequest($request));
+    }
+
+    public function test__get_binding_by_request_http_artifact_get()
+    {
+        $request = $this->createArtifactGetRequest();
+        $factory = new BindingFactory();
+        $this->assertInstanceOf('LightSaml\Binding\HttpArtifactBinding', $factory->getBindingByRequest($request));
     }
 
     /**
