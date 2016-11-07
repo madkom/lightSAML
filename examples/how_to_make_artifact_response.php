@@ -18,8 +18,8 @@ $artifactResponse
     ->setWrappedMessage($response)
 ;
 
-$certificate = \LightSaml\Credential\X509Certificate::fromFile(__DIR__.'/../resources/cert/broker.madkom.pl.crt');
-$privateKey = \LightSaml\Credential\KeyHelper::createPrivateKey(__DIR__.'/../resources/cert/broker.madkom.pl.pem', '', true);
+$certificate = \LightSaml\Credential\X509Certificate::fromFile(__DIR__.'/../resources/sample/Certificate/lightsaml-idp.crt');
+$privateKey = \LightSaml\Credential\KeyHelper::createPrivateKey(__DIR__.'/../resources/sample/Certificate/lightsaml-idp.key', '', true);
 
 $artifactResponse->setSignature(new \LightSaml\Model\XmlDSig\SignatureWriter($certificate, $privateKey));
 
