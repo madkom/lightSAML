@@ -2,7 +2,7 @@
 
 namespace LightSaml\Tests\Action\Profile\Outbound\AuthnRequest;
 
-use LightSaml\Action\Profile\Outbound\AuthnRequest\ACSUrlAction;
+use LightSaml\Action\Profile\Outbound\AuthnRequest\ACSAction;
 use LightSaml\Context\Profile\ProfileContext;
 use LightSaml\Criteria\CriteriaSet;
 use LightSaml\Model\Metadata\AssertionConsumerService;
@@ -16,18 +16,19 @@ use LightSaml\Resolver\Endpoint\Criteria\ServiceTypeCriteria;
 use LightSaml\SamlConstants;
 use LightSaml\Tests\TestHelper;
 
-class ACSUrlActionTest extends \PHPUnit_Framework_TestCase
+class ACSActionTest extends \PHPUnit_Framework_TestCase
 {
-    public function test_constructs_with_logger_and_endpoint_resolver()
+    public function test_constructs_with_logger_endpoint_resolver_and_binding_criteria()
     {
-        new ACSUrlAction(TestHelper::getLoggerMock($this), $this->getEndpointResolverMock());
+        new ACSAction(TestHelper::getLoggerMock($this), $this->getEndpointResolverMock(), [SamlConstants::BINDING_SAML2_HTTP_POST, SamlConstants::BINDING_SAML2_HTTP_ARTIFACT]);
     }
 
-    public function test_finds_acs_endpoint_and_sets_outbounding_authn_request_acs_url()
+    public function test_finds_acs_endpoint_and_sets_outbounding_authn_request_acs_url_and_binding()
     {
-        $action = new ACSUrlAction(
+        $action = new ACSAction(
             $loggerMock = TestHelper::getLoggerMock($this),
-            $endpointResolverMock = $this->getEndpointResolverMock()
+            $endpointResolverMock = $this->getEndpointResolverMock(),
+            [SamlConstants::BINDING_SAML2_HTTP_POST]
         );
 
         $context = new ProfileContext(Profiles::SSO_SP_SEND_AUTHN_REQUEST, ProfileContext::ROLE_SP);
@@ -58,17 +59,19 @@ class ACSUrlActionTest extends \PHPUnit_Framework_TestCase
         $action->execute($context);
 
         $this->assertEquals($endpoint->getLocation(), $authnRequest->getAssertionConsumerServiceURL());
+        $this->assertEquals($endpoint->getBinding(), $authnRequest->getProtocolBinding());
     }
 
     /**
      * @expectedException \LightSaml\Error\LightSamlContextException
-     * @expectedExceptionMessage Missing ACS Service with HTTP POST binding in own SP SSO Descriptor
+     * @expectedExceptionMessage Missing ACS Service with urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST binding in own SP SSO Descriptor
      */
     public function test_throws_context_exception_if_no_own_acs_service()
     {
-        $action = new ACSUrlAction(
+        $action = new ACSAction(
             $loggerMock = TestHelper::getLoggerMock($this),
-            $endpointResolverMock = $this->getEndpointResolverMock()
+            $endpointResolverMock = $this->getEndpointResolverMock(),
+            [SamlConstants::BINDING_SAML2_HTTP_POST]
         );
 
         $context = new ProfileContext(Profiles::SSO_SP_SEND_AUTHN_REQUEST, ProfileContext::ROLE_SP);
