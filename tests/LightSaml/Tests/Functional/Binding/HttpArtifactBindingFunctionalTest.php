@@ -2,9 +2,12 @@
 
 namespace LightSaml\Tests\Functional\Binding;
 
+use LightSaml\Context\Profile\ProfileContext;
+use LightSaml\Model\Protocol\Artifact;
 use LightSaml\Binding\HttpArtifactBinding;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Event\Events;
+use LightSaml\Model\Protocol\ArtifactGenerator;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -15,7 +18,7 @@ class HttpArtifactBindingFunctionalTest extends \PHPUnit_Framework_TestCase
         $expectedRelayState = 'relayState';
         $expectedDestination = 'https://destination.com/auth';
 
-        $expectedArtifact = 'test-artifact';
+        $expectedArtifact = new Artifact('0004', '0000', sha1('http://testsp.com'), bin2hex(openssl_random_pseudo_bytes(20)));
 
         $messageContext = new MessageContext();
         $messageContext->setRelayState($expectedRelayState);
@@ -45,7 +48,7 @@ class HttpArtifactBindingFunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('SAMLart', $data);
         $this->assertArrayHasKey('RelayState', $data);
         $this->assertEquals(
-            $expectedArtifact,
+            (string) $expectedArtifact,
             $data['SAMLart']
         );
         $this->assertEquals($expectedRelayState, $data['RelayState']);
@@ -56,12 +59,12 @@ class HttpArtifactBindingFunctionalTest extends \PHPUnit_Framework_TestCase
     public function test_receive_authn_request()
     {
         $expectedRelayState = 'relayState';
-        $expectedArtifact = 'test-artifact';
+        $expectedArtifact = new Artifact('0004', '0000', sha1('http://testsp.com'), bin2hex(openssl_random_pseudo_bytes(20)));
 
         $request = new Request();
         $request->setMethod('POST');
         $request->request->add(array(
-            'SAMLart' => $expectedArtifact,
+            'SAMLart' => (string) $expectedArtifact,
             'RelayState' => $expectedRelayState,
         ));
 
@@ -73,13 +76,18 @@ class HttpArtifactBindingFunctionalTest extends \PHPUnit_Framework_TestCase
             ->willReturnCallback(function ($name, GenericEvent $event) use ($expectedArtifact) {
                 $this->assertEquals(Events::BINDING_MESSAGE_RECEIVED, $name);
                 $this->assertNotEmpty($event->getSubject());
-                $this->assertEquals($expectedArtifact, $event->getSubject());
+                $this->assertEquals((string) $expectedArtifact, $event->getSubject());
             });
 
         $binding->setEventDispatcher($eventDispatcherMock);
         $this->assertSame($eventDispatcherMock, $binding->getEventDispatcher());
 
+        $profileContext = new ProfileContext('test', ProfileContext::ROLE_SP);
+        $profileContext->getArtifactContext()->setGenerator(new ArtifactGenerator());
+
         $messageContext = new MessageContext();
+        $messageContext->setParent($profileContext);
+
         $binding->receive($request, $messageContext);
 
         $this->assertEmpty($messageContext->getMessage());
