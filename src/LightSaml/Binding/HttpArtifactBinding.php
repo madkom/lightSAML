@@ -61,6 +61,6 @@ class HttpArtifactBinding extends AbstractBinding
             $context->setRelayState($relayState);
         }
 
-        $context->setArtifact($artifact);
+        $context->setArtifact($context->getProfileContext()->getArtifactContext()->getGenerator()->generateFromString($artifact));
     }
 }
