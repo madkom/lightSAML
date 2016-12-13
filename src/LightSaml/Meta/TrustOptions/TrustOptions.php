@@ -28,6 +28,9 @@ class TrustOptions
     /** @var bool */
     protected $signResponse = true;
 
+    /** @var bool */
+    protected $signArtifactResolve = true;
+
     /**
      * @return bool
      */
@@ -126,5 +129,21 @@ class TrustOptions
         $this->signResponse = (bool) $signResponse;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getSignArtifactResolve()
+    {
+        return $this->signArtifactResolve;
+    }
+
+    /**
+     * @param bool $signArtifactResolve
+     */
+    public function setSignArtifactResolve($signArtifactResolve)
+    {
+        $this->signArtifactResolve = $signArtifactResolve;
     }
 }
