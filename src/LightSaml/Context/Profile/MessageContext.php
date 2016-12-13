@@ -13,6 +13,7 @@ namespace LightSaml\Context\Profile;
 
 use LightSaml\Model\Context\DeserializationContext;
 use LightSaml\Model\Context\SerializationContext;
+use LightSaml\Model\Protocol\Artifact;
 use LightSaml\Model\Protocol\AuthnRequest;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\LogoutResponse;
@@ -22,7 +23,7 @@ use LightSaml\Model\Protocol\SamlMessage;
 class MessageContext extends AbstractProfileContext
 {
     /**
-     * @var string
+     * @var Artifact
      */
     private $artifact;
 
@@ -76,7 +77,7 @@ class MessageContext extends AbstractProfileContext
     }
 
     /**
-     * @return string
+     * @return Artifact
      */
     public function getArtifact()
     {
@@ -84,11 +85,11 @@ class MessageContext extends AbstractProfileContext
     }
 
     /**
-     * @param string $artifact
+     * @param Artifact $artifact
      *
      * @return MessageContext
      */
-    public function setArtifact($artifact)
+    public function setArtifact(Artifact $artifact)
     {
         $this->artifact = $artifact;
 
