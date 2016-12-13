@@ -409,6 +409,9 @@ class EntityDescriptor extends Metadata
             foreach ($idpSsoDescriptor->getAllSingleLogoutServices() as $slo) {
                 $result[] = new EndpointReference($this, $idpSsoDescriptor, $slo);
             }
+            foreach ($idpSsoDescriptor->getAllArtifactResolutionServices() as $ars) {
+                $result[] = new EndpointReference($this, $idpSsoDescriptor, $ars);
+            }
         }
         foreach ($this->getAllSpSsoDescriptors() as $spSsoDescriptor) {
             foreach ($spSsoDescriptor->getAllAssertionConsumerServices() as $acs) {
@@ -416,6 +419,9 @@ class EntityDescriptor extends Metadata
             }
             foreach ($spSsoDescriptor->getAllSingleLogoutServices() as $slo) {
                 $result[] = new EndpointReference($this, $spSsoDescriptor, $slo);
+            }
+            foreach ($spSsoDescriptor->getAllArtifactResolutionServices() as $ars) {
+                $result[] = new EndpointReference($this, $spSsoDescriptor, $ars);
             }
         }
 
@@ -425,8 +431,6 @@ class EntityDescriptor extends Metadata
     /**
      * @param \DOMNode             $parent
      * @param SerializationContext $context
-     *
-     * @return void
      */
     public function serialize(\DOMNode $parent, SerializationContext $context)
     {

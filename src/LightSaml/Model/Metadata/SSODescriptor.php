@@ -20,6 +20,9 @@ abstract class SSODescriptor extends RoleDescriptor
     /** @var SingleLogoutService[] */
     protected $singleLogoutServices = array();
 
+    /** @var ArtifactResolutionService[] */
+    protected $artifactResolutionServices = array();
+
     /** @var string[]|null */
     protected $nameIDFormats;
 
@@ -77,6 +80,59 @@ abstract class SSODescriptor extends RoleDescriptor
     }
 
     /**
+     * @param ArtifactResolutionService $artifactResolutionService
+     *
+     * @return SSODescriptor
+     */
+    public function addArtifactResolutionService(ArtifactResolutionService $artifactResolutionService)
+    {
+        $this->artifactResolutionServices[] = $artifactResolutionService;
+
+        return $this;
+    }
+
+    /**
+     * @return ArtifactResolutionService[]
+     */
+    public function getAllArtifactResolutionServices()
+    {
+        return $this->artifactResolutionServices;
+    }
+
+    /**
+     * @param string $binding
+     *
+     * @return ArtifactResolutionService[]
+     */
+    public function getAllArtifactResolutionServiceByBinding($binding)
+    {
+        $result = array();
+        foreach ($this->getAllArtifactResolutionServices() as $ars) {
+            if ($binding == $ars->getBinding()) {
+                $result[] = $ars;
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string|null $binding
+     *
+     * @return ArtifactResolutionService|null
+     */
+    public function getFirstArtifactResolutionService($binding = null)
+    {
+        foreach ($this->getAllArtifactResolutionServices() as $ars) {
+            if (null == $binding || $binding == $ars->getBinding()) {
+                return $ars;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @param string $nameIDFormat
      *
      * @return SSODescriptor
@@ -123,6 +179,7 @@ abstract class SSODescriptor extends RoleDescriptor
         parent::serialize($parent, $context);
 
         $this->manyElementsToXml($this->getAllSingleLogoutServices(), $parent, $context, null);
+        $this->manyElementsToXml($this->getAllArtifactResolutionServices(), $parent, $context, null);
         $this->manyElementsToXml($this->getAllNameIDFormats(), $parent, $context, 'NameIDFormat', SamlConstants::NS_METADATA);
     }
 
@@ -143,6 +200,15 @@ abstract class SSODescriptor extends RoleDescriptor
             'md',
             'LightSaml\Model\Metadata\SingleLogoutService',
             'addSingleLogoutService'
+        );
+
+        $this->manyElementsFromXml(
+            $node,
+            $context,
+            'ArtifactResolutionService',
+            'md',
+            'LightSaml\Model\Metadata\ArtifactResolutionService',
+            'addArtifactResolutionService'
         );
     }
 }
