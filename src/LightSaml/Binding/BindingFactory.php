@@ -77,7 +77,8 @@ class BindingFactory implements BindingFactoryInterface
                 $result = new HttpArtifactBinding();
                 break;
             case SamlConstants::BINDING_SAML2_SOAP:
-                throw new \LogicException('SOAP binding not implemented');
+                $result = new SoapBinding();
+                break;
         }
 
         if ($result) {
