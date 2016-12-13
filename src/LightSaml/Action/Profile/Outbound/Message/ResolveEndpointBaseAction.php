@@ -12,6 +12,7 @@
 namespace LightSaml\Action\Profile\Outbound\Message;
 
 use LightSaml\Action\Profile\AbstractProfileAction;
+use LightSaml\Binding\Artifact;
 use LightSaml\Context\Profile\Helper\LogHelper;
 use LightSaml\Context\Profile\ProfileContext;
 use LightSaml\Error\LightSamlContextException;
@@ -79,6 +80,11 @@ abstract class ResolveEndpointBaseAction extends AbstractProfileAction
             if (null !== $message->getAssertionConsumerServiceURL()) {
                 $criteriaSet->add(new LocationCriteria($message->getAssertionConsumerServiceURL()));
             }
+        }
+
+        $artifact = $context->getInboundContext()->getArtifact();
+        if ($artifact instanceof Artifact) {
+            $criteriaSet->add(new IndexCriteria($artifact->getEndpointIndex()));
         }
 
         $candidates = $this->endpointResolver->resolve($criteriaSet, $context->getPartyEntityDescriptor()->getAllEndpoints());

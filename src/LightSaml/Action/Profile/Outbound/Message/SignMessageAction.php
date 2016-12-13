@@ -15,6 +15,7 @@ use LightSaml\Action\Profile\AbstractProfileAction;
 use LightSaml\Context\Profile\Helper\LogHelper;
 use LightSaml\Context\Profile\Helper\MessageContextHelper;
 use LightSaml\Context\Profile\ProfileContext;
+use LightSaml\Model\Protocol\ArtifactResolve;
 use LightSaml\Model\Protocol\AuthnRequest;
 use LightSaml\Model\Protocol\LogoutRequest;
 use LightSaml\Model\Protocol\Response;
@@ -86,6 +87,8 @@ class SignMessageAction extends AbstractProfileAction
             return $trustOptions->getSignAuthnRequest();
         } elseif ($message instanceof Response) {
             return $trustOptions->getSignResponse();
+        } elseif ($message instanceof ArtifactResolve) {
+            return $trustOptions->getSignArtifactResolve();
         }
 
         throw new \LogicException(sprintf('Unexpected message type "%s"', get_class($message)));

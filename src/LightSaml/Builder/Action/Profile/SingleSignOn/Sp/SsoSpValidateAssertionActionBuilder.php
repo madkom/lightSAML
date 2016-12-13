@@ -24,9 +24,6 @@ use LightSaml\SamlConstants;
 
 class SsoSpValidateAssertionActionBuilder extends AbstractProfileActionBuilder
 {
-    /**
-     * @return void
-     */
     protected function doInitialize()
     {
         $this->add(new AssertionValidatorAction(
@@ -59,10 +56,10 @@ class SsoSpValidateAssertionActionBuilder extends AbstractProfileActionBuilder
             $this->buildContainer->getSystemContainer()->getTimeProvider(),
             120
         ));
-        $this->add(new AssertionSignatureValidatorAction(
-            $this->buildContainer->getSystemContainer()->getLogger(),
-            $this->buildContainer->getServiceContainer()->getSignatureValidator(),
-            true
-        ));
+//        $this->add(new AssertionSignatureValidatorAction(
+//            $this->buildContainer->getSystemContainer()->getLogger(),
+//            $this->buildContainer->getServiceContainer()->getSignatureValidator(),
+//            true
+//        ));
     }
 }
