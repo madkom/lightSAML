@@ -12,11 +12,13 @@
 namespace LightSaml\Builder\Action\Profile\SingleSignOn\Sp;
 
 use LightSaml\Action\DispatchEventAction;
+use LightSaml\Action\Profile\Outbound\AuthnRequest\ACSAction;
 use LightSaml\Action\Profile\Outbound\AuthnRequest\CreateAuthnRequestAction;
 use LightSaml\Action\Profile\Outbound\Message\CreateMessageIssuerAction;
 use LightSaml\Action\Profile\Outbound\Message\DestinationAction;
 use LightSaml\Action\Profile\Outbound\Message\MessageIdAction;
 use LightSaml\Action\Profile\Outbound\Message\MessageIssueInstantAction;
+use LightSaml\Action\Profile\Outbound\Message\NameIDPolicyAction;
 use LightSaml\Action\Profile\Outbound\Message\ResolveEndpointIdpSsoAction;
 use LightSaml\Action\Profile\Outbound\Message\SaveRequestStateAction;
 use LightSaml\Action\Profile\Outbound\Message\SendMessageAction;
@@ -58,6 +60,15 @@ class SsoSpSendAuthnRequestActionBuilder extends AbstractProfileActionBuilder
         ));
         $this->add(new CreateMessageIssuerAction(
             $this->buildContainer->getSystemContainer()->getLogger()
+        ));
+        $this->add(new NameIDPolicyAction(
+            $this->buildContainer->getSystemContainer()->getLogger(),
+            SamlConstants::NAME_ID_FORMAT_UNSPECIFIED //TODO move to SSODescriptor
+        ));
+        $this->add(new ACSAction(
+            $this->buildContainer->getSystemContainer()->getLogger(),
+            $this->buildContainer->getServiceContainer()->getEndpointResolver(),
+            [SamlConstants::BINDING_SAML2_HTTP_ARTIFACT, SamlConstants::BINDING_SAML2_HTTP_POST]
         ));
         $this->add(new SaveRequestStateAction(
             $this->buildContainer->getSystemContainer()->getLogger(),
