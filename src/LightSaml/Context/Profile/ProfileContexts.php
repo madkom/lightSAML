@@ -25,4 +25,5 @@ class ProfileContexts
     const REQUEST_STATE = 'request_state';
     const LOGOUT = 'logout';
     const EXCEPTION = 'exception';
+    const ARTIFACT = 'artifact';
 }

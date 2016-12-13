@@ -139,6 +139,14 @@ class ProfileContext extends AbstractProfileContext
     }
 
     /**
+     * @return ArtifactContext
+     */
+    public function getArtifactContext()
+    {
+        return $this->getSubContext(ProfileContexts::ARTIFACT, ArtifactContext::class);
+    }
+
+    /**
      * @return \Symfony\Component\HttpFoundation\Request
      */
     public function getHttpRequest()
