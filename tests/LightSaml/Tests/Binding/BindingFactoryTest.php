@@ -22,14 +22,11 @@ class BindingFactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('LightSaml\Binding\HttpPostBinding', $binding);
     }
 
-    /**
-     * @expectedException \LogicException
-     * @expectedExceptionMessage SOAP binding not implemented
-     */
-    public function test__create_throws_not_implemented_error_for_soap()
+    public function test__create_soap()
     {
         $factory = new BindingFactory();
-        $factory->create(SamlConstants::BINDING_SAML2_SOAP);
+        $binding = $factory->create(SamlConstants::BINDING_SAML2_SOAP);
+        $this->assertInstanceOf('LightSaml\Binding\SoapBinding', $binding);
     }
 
     public function test__create_http_artifact()
