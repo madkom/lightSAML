@@ -13,6 +13,7 @@ namespace LightSaml\Bridge\Pimple\Container\Factory;
 
 use LightSaml\Bridge\Pimple\Container\StoreContainer;
 use LightSaml\Build\Container\SystemContainerInterface;
+use LightSaml\Store\Artifact\ArtifactArrayStore;
 use LightSaml\Store\Id\NullIdStore;
 use LightSaml\Store\Request\RequestStateSessionStore;
 use LightSaml\Store\Sso\SsoStateSessionStore;
@@ -44,6 +45,11 @@ class StoreContainerProvider implements ServiceProviderInterface
 
         $pimple[StoreContainer::SSO_STATE_STORE] = function () {
             return new SsoStateSessionStore($this->systemContainer->getSession(), 'samlsso');
+        };
+
+        $pimple[StoreContainer::ARTIFACT_STORE] = function () {
+            //todo make persistent store
+            return new ArtifactArrayStore();
         };
     }
 }

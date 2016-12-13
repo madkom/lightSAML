@@ -16,6 +16,7 @@ use LightSaml\Bridge\Pimple\Container\ServiceContainer;
 use LightSaml\Build\Container\CredentialContainerInterface;
 use LightSaml\Build\Container\StoreContainerInterface;
 use LightSaml\Build\Container\SystemContainerInterface;
+use LightSaml\Model\Protocol\ArtifactGenerator;
 use LightSaml\Resolver\Credential\Factory\CredentialResolverFactory;
 use LightSaml\Resolver\Endpoint\BindingEndpointResolver;
 use LightSaml\Resolver\Endpoint\CompositeEndpointResolver;
@@ -122,6 +123,10 @@ class ServiceContainerProvider implements ServiceProviderInterface
 
         $pimple[ServiceContainer::SESSION_PROCESSOR] = function () {
             return new SessionProcessor($this->storeContainer->getSsoStateStore(), $this->systemContainer->getTimeProvider());
+        };
+
+        $pimple[ServiceContainer::ARTIFACT_GENERATOR] = function () {
+            return new ArtifactGenerator();
         };
     }
 }

@@ -12,6 +12,7 @@
 namespace LightSaml\Bridge\Pimple\Container;
 
 use LightSaml\Build\Container\StoreContainerInterface;
+use LightSaml\Store\Artifact\ArtifactStoreInterface;
 use LightSaml\Store\Id\IdStoreInterface;
 use LightSaml\Store\Request\RequestStateStoreInterface;
 use LightSaml\Store\Sso\SsoStateStoreInterface;
@@ -21,6 +22,7 @@ class StoreContainer extends AbstractPimpleContainer implements StoreContainerIn
     const REQUEST_STATE_STORE = 'lightsaml.container.request_state_store';
     const ID_STATE_STORE = 'lightsaml.container.id_state_store';
     const SSO_STATE_STORE = 'lightsaml.container.sso_state_store';
+    const ARTIFACT_STORE = 'lightsaml.container.artifact_store';
 
     /**
      * @return RequestStateStoreInterface
@@ -44,5 +46,13 @@ class StoreContainer extends AbstractPimpleContainer implements StoreContainerIn
     public function getSsoStateStore()
     {
         return $this->pimple[self::SSO_STATE_STORE];
+    }
+
+    /**
+     * @return ArtifactStoreInterface
+     */
+    public function getArtifactStore()
+    {
+        return $this->pimple[self::ARTIFACT_STORE];
     }
 }
