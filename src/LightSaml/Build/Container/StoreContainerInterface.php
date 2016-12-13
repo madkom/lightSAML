@@ -11,6 +11,7 @@
 
 namespace LightSaml\Build\Container;
 
+use LightSaml\Store\Artifact\ArtifactStoreInterface;
 use LightSaml\Store\Id\IdStoreInterface;
 use LightSaml\Store\Request\RequestStateStoreInterface;
 use LightSaml\Store\Sso\SsoStateStoreInterface;
@@ -31,4 +32,9 @@ interface StoreContainerInterface
      * @return SsoStateStoreInterface
      */
     public function getSsoStateStore();
+
+    /**
+     * @return ArtifactStoreInterface
+     */
+    public function getArtifactStore();
 }

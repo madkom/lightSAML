@@ -11,6 +11,7 @@
 
 namespace LightSaml\Build\Container;
 
+use LightSaml\Binding\ArtifactGenerator;
 use LightSaml\Binding\BindingFactoryInterface;
 use LightSaml\Resolver\Credential\CredentialResolverInterface;
 use LightSaml\Resolver\Endpoint\EndpointResolverInterface;
@@ -73,4 +74,9 @@ interface ServiceContainerInterface
      * @return SessionProcessorInterface
      */
     public function getSessionProcessor();
+
+    /**
+     * @return ArtifactGenerator
+     */
+    public function getArtifactGenerator();
 }
