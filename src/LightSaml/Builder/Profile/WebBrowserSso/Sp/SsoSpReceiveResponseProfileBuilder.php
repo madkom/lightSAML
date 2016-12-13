@@ -12,6 +12,7 @@
 namespace LightSaml\Builder\Profile\WebBrowserSso\Sp;
 
 use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpReceiveResponseActionBuilder;
+use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpResponseValidatorActionBuilder;
 use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpValidateAssertionActionBuilder;
 use LightSaml\Builder\Profile\AbstractProfileBuilder;
 use LightSaml\Context\Profile\ProfileContext;
@@ -42,7 +43,10 @@ class SsoSpReceiveResponseProfileBuilder extends AbstractProfileBuilder
     {
         $result = new SsoSpReceiveResponseActionBuilder(
             $this->container,
-            new SsoSpValidateAssertionActionBuilder($this->container)
+            new SsoSpResponseValidatorActionBuilder(
+                $this->container,
+                new SsoSpValidateAssertionActionBuilder($this->container)
+            )
         );
 
         return $result;
