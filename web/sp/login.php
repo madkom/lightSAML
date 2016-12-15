@@ -25,7 +25,7 @@ $buildContainer->getSystemContainer()->getEventDispatcher()
         function (\Symfony\Component\EventDispatcher\GenericEvent $event) {
             /** @var \LightSaml\Context\Profile\ProfileContext $context */
             $context = $event->getSubject();
-            $context->getOutboundMessage()->setRelayState('relayState');
+            $context->getOutboundContext()->setRelayState('relayState');
         }
     );
 
