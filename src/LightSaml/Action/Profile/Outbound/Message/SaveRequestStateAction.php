@@ -56,7 +56,7 @@ class SaveRequestStateAction extends AbstractProfileAction
             RequestStateParameters::TYPE => get_class($message),
             RequestStateParameters::TIMESTAMP => $message->getIssueInstantTimestamp(),
             RequestStateParameters::PARTY => $partyEntityId,
-            RequestStateParameters::RELAY_STATE => $message->getRelayState(),
+            RequestStateParameters::RELAY_STATE => $context->getOutboundContext()->getRelayState(),
         ]);
 
         if ($message instanceof LogoutRequest) {
