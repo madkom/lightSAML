@@ -27,7 +27,7 @@ var_dump($context->__toString());
 $response = \LightSaml\Context\Profile\Helper\MessageContextHelper::asResponse($context->getInboundContext());
 
 var_dump('RELAY STATE');
-var_dump($response->getRelayState());
+var_dump($context->getInboundContext()->getRelayState());
 
 var_dump('ATTRIBUTES');
 foreach ($response->getAllAssertions() as $assertion) {
