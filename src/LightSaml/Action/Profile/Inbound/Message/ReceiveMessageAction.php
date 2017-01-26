@@ -12,6 +12,7 @@
 namespace LightSaml\Action\Profile\Inbound\Message;
 
 use LightSaml\Action\ActionInterface;
+use LightSaml\Action\DebugPrintTreeActionInterface;
 use LightSaml\Action\Profile\AbstractProfileAction;
 use LightSaml\Binding\BindingFactoryInterface;
 use LightSaml\Context\Profile\Helper\LogHelper;
@@ -24,7 +25,7 @@ use Psr\Log\LoggerInterface;
  * Receives message from HTTP Request into inbound context,
  * optionally enforces biding type to the one specified in the inbound context.
  */
-class ReceiveMessageAction extends AbstractProfileAction
+class ReceiveMessageAction extends AbstractProfileAction implements DebugPrintTreeActionInterface
 {
     /** @var BindingFactoryInterface */
     protected $bindingFactory;
@@ -76,5 +77,26 @@ class ReceiveMessageAction extends AbstractProfileAction
                 'message' => $context->getInboundContext()->getDeserializationContext()->getDocument()->saveXML(),
             ))
         );
+    }
+
+    /**
+     * @param int $depth
+     *
+     * @return array
+     */
+    public function debugPrintTree($depth = 0)
+    {
+        $arr = array();
+        if ($this->exchengeArtifactForResponseAction instanceof DebugPrintTreeActionInterface) {
+            $arr = array_merge($arr, $this->exchengeArtifactForResponseAction->debugPrintTree());
+        } else {
+            $arr[get_class($this->exchengeArtifactForResponseAction)] = array();
+        }
+
+        $result = array(
+            static::class => $arr,
+        );
+
+        return $result;
     }
 }
