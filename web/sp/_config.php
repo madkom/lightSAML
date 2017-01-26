@@ -6,7 +6,7 @@ class SpConfig
 {
     const OWN_ENTITY_ID = 'https://localhost/lightSAML/lightSAML';
 
-    /** @var  \SpConfig */
+    /** @var \SpConfig */
     private static $instance;
 
     public $debug = true;
@@ -60,11 +60,9 @@ class SpConfig
         $pimple = $buildContainer->getPimple();
         $pimple[\LightSaml\Bridge\Pimple\Container\SystemContainer::LOGGER] = function () {
             return $this->buildLogger();
-
         };
         $pimple[\LightSaml\Bridge\Pimple\Container\SystemContainer::SESSION] = function () {
             return $this->buildSession();
-
         };
     }
 
@@ -157,10 +155,14 @@ class SpConfig
      */
     private function buildOwnEntityDescriptorProvider(\LightSaml\Credential\X509Certificate $certificate)
     {
-        return new \LightSaml\Builder\EntityDescriptor\SimpleEntityDescriptorBuilder(
+        return new \LightSaml\Builder\EntityDescriptor\ArtifactSupportedEntityDescriptorBuilder(
             self::OWN_ENTITY_ID,
-            'https://localhost/lightsaml/lightSAML/web/sp/acs.php',
-            null,
+            [
+                ['location' => 'https://localhost/lightsaml/lightSAML/web/sp/acs.php', 'binding' => \LightSaml\SamlConstants::BINDING_SAML2_HTTP_ARTIFACT],
+                ['location' => 'https://localhost/lightsaml/lightSAML/web/sp/acs.php', 'binding' => \LightSaml\SamlConstants::BINDING_SAML2_HTTP_POST],
+            ], null, [
+
+            ], null,
             $certificate
         );
     }
