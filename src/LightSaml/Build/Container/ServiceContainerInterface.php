@@ -11,7 +11,7 @@
 
 namespace LightSaml\Build\Container;
 
-use LightSaml\Binding\ArtifactGenerator;
+use LightSaml\Model\Protocol\ArtifactGenerator;
 use LightSaml\Binding\BindingFactoryInterface;
 use LightSaml\Resolver\Credential\CredentialResolverInterface;
 use LightSaml\Resolver\Endpoint\EndpointResolverInterface;
