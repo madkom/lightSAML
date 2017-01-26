@@ -11,11 +11,12 @@
 
 namespace LightSaml\Builder\Profile\WebBrowserSso\Sp;
 
+use LightSaml\Builder\Action\Profile\ArtifactResolution\SsoSpExchangeArtifactForResponseActionBuilder;
 use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpReceiveResponseActionBuilder;
-use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpResponseValidatorActionBuilder;
 use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpValidateAssertionActionBuilder;
 use LightSaml\Builder\Profile\AbstractProfileBuilder;
 use LightSaml\Context\Profile\ProfileContext;
+use LightSaml\Model\Protocol\ArtifactGenerator;
 use LightSaml\Profile\Profiles;
 
 class SsoSpReceiveResponseProfileBuilder extends AbstractProfileBuilder
@@ -43,12 +44,19 @@ class SsoSpReceiveResponseProfileBuilder extends AbstractProfileBuilder
     {
         $result = new SsoSpReceiveResponseActionBuilder(
             $this->container,
-            new SsoSpResponseValidatorActionBuilder(
-                $this->container,
-                new SsoSpValidateAssertionActionBuilder($this->container)
-            )
+            new SsoSpExchangeArtifactForResponseActionBuilder($this->container),
+            new SsoSpValidateAssertionActionBuilder($this->container)
         );
 
         return $result;
+    }
+
+    public function buildContext()
+    {
+        $profileContext = parent::buildContext();
+
+        $profileContext->getArtifactContext()->setGenerator(new ArtifactGenerator());
+
+        return $profileContext;
     }
 }

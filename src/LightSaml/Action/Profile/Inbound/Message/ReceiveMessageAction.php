@@ -11,11 +11,13 @@
 
 namespace LightSaml\Action\Profile\Inbound\Message;
 
+use LightSaml\Action\ActionInterface;
 use LightSaml\Action\Profile\AbstractProfileAction;
 use LightSaml\Binding\BindingFactoryInterface;
 use LightSaml\Context\Profile\Helper\LogHelper;
 use LightSaml\Context\Profile\ProfileContext;
 use LightSaml\Error\LightSamlBindingException;
+use LightSaml\SamlConstants;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -28,20 +30,25 @@ class ReceiveMessageAction extends AbstractProfileAction
     protected $bindingFactory;
 
     /**
+     * @var ActionInterface
+     */
+    private $exchengeArtifactForResponseAction;
+
+    /**
      * @param LoggerInterface         $logger
      * @param BindingFactoryInterface $bindingFactory
+     * @param ActionInterface         $exchengeArtifactForResponseAction
      */
-    public function __construct(LoggerInterface $logger, BindingFactoryInterface $bindingFactory)
+    public function __construct(LoggerInterface $logger, BindingFactoryInterface $bindingFactory, ActionInterface $exchengeArtifactForResponseAction)
     {
         parent::__construct($logger);
 
         $this->bindingFactory = $bindingFactory;
+        $this->exchengeArtifactForResponseAction = $exchengeArtifactForResponseAction;
     }
 
     /**
      * @param ProfileContext $context
-     *
-     * @return void
      */
     protected function doExecute(ProfileContext $context)
     {
@@ -54,8 +61,13 @@ class ReceiveMessageAction extends AbstractProfileAction
 
         $this->logger->debug(sprintf('Detected binding type: %s', $bindingType), LogHelper::getActionContext($context, $this));
 
-        $binding = $this->bindingFactory->create($bindingType);
-        $binding->receive($context->getHttpRequest(), $context->getInboundContext());
+        if ($bindingType === SamlConstants::BINDING_SAML2_HTTP_ARTIFACT) {
+            $this->exchengeArtifactForResponseAction->execute($context);
+        } else {
+            $binding = $this->bindingFactory->create($bindingType);
+            $binding->receive($context->getHttpRequest(), $context->getInboundContext());
+        }
+
         $context->getInboundContext()->setBindingType($bindingType);
 
         $this->logger->info(

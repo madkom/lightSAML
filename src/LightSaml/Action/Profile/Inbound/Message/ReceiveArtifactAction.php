@@ -12,10 +12,9 @@
 namespace LightSaml\Action\Profile\Inbound\Message;
 
 use LightSaml\Action\Profile\AbstractProfileAction;
-use LightSaml\Binding\BindingFactoryInterface;
+use LightSaml\Binding\HttpArtifactBinding;
 use LightSaml\Context\Profile\Helper\LogHelper;
 use LightSaml\Context\Profile\ProfileContext;
-use LightSaml\Error\LightSamlBindingException;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -23,18 +22,20 @@ use Psr\Log\LoggerInterface;
  */
 class ReceiveArtifactAction extends AbstractProfileAction
 {
-    /** @var BindingFactoryInterface */
-    protected $bindingFactory;
+    /**
+     * @var HttpArtifactBinding
+     */
+    private $binding;
 
     /**
-     * @param LoggerInterface         $logger
-     * @param BindingFactoryInterface $bindingFactory
+     * @param LoggerInterface     $logger
+     * @param HttpArtifactBinding $binding
      */
-    public function __construct(LoggerInterface $logger, BindingFactoryInterface $bindingFactory)
+    public function __construct(LoggerInterface $logger, HttpArtifactBinding $binding)
     {
         parent::__construct($logger);
 
-        $this->bindingFactory = $bindingFactory;
+        $this->binding = $binding;
     }
 
     /**
@@ -42,17 +43,7 @@ class ReceiveArtifactAction extends AbstractProfileAction
      */
     protected function doExecute(ProfileContext $context)
     {
-        $bindingType = $this->bindingFactory->detectBindingType($context->getHttpRequest());
-        if (null == $bindingType) {
-            $message = 'Unable to resolve binding type, invalid or unsupported http request';
-            $this->logger->critical($message, LogHelper::getActionErrorContext($context, $this));
-            throw new LightSamlBindingException($message);
-        }
-
-        $this->logger->debug(sprintf('Detected binding type: %s', $bindingType), LogHelper::getActionContext($context, $this));
-
-        $binding = $this->bindingFactory->create($bindingType);
-        $binding->receive($context->getHttpRequest(), $context->getInboundContext());
+        $this->binding->receive($context->getHttpRequest(), $context->getInboundContext());
 
         $this->logger->info(
             'Received artifact',

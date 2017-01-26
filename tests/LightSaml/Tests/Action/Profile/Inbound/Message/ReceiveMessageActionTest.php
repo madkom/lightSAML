@@ -2,6 +2,7 @@
 
 namespace LightSaml\Tests\Action\Profile\Inbound\Message;
 
+use LightSaml\Action\ActionInterface;
 use LightSaml\Action\Profile\Inbound\Message\ReceiveMessageAction;
 use LightSaml\Binding\AbstractBinding;
 use LightSaml\Binding\BindingFactoryInterface;
@@ -15,7 +16,11 @@ class ReceiveMessageActionTest extends \PHPUnit_Framework_TestCase
 {
     public function test_constructs_with_logger_and_binding_factory()
     {
-        new ReceiveMessageAction(TestHelper::getLoggerMock($this), $this->getBindingFactoryMock());
+        new ReceiveMessageAction(
+            TestHelper::getLoggerMock($this),
+            $this->getBindingFactoryMock(),
+            $this->getExchengeArtifactForResponseActionBuilderMock()
+        );
     }
 
     /**
@@ -24,7 +29,11 @@ class ReceiveMessageActionTest extends \PHPUnit_Framework_TestCase
      */
     public function test_throws_on_invalid_binding()
     {
-        $action = new ReceiveMessageAction($logger = TestHelper::getLoggerMock($this), $bindingFactory = $this->getBindingFactoryMock());
+        $action = new ReceiveMessageAction(
+            $logger = TestHelper::getLoggerMock($this),
+            $bindingFactory = $this->getBindingFactoryMock(),
+            $exchangeArtifactActionBuilder = $this->getExchengeArtifactForResponseActionBuilderMock()
+        );
 
         $context = new ProfileContext(Profiles::SSO_SP_SEND_AUTHN_REQUEST, ProfileContext::ROLE_SP);
 
@@ -42,9 +51,44 @@ class ReceiveMessageActionTest extends \PHPUnit_Framework_TestCase
         $action->execute($context);
     }
 
-    public function test_receives_message()
+    public function test_receives_message_using_artifact_binding()
     {
-        $action = new ReceiveMessageAction($logger = TestHelper::getLoggerMock($this), $bindingFactory = $this->getBindingFactoryMock());
+        $action = new ReceiveMessageAction(
+            $logger = TestHelper::getLoggerMock($this),
+            $bindingFactory = $this->getBindingFactoryMock(),
+            $exchangeArtifactActionBuilder = $this->getExchengeArtifactForResponseActionBuilderMock()
+        );
+
+        $context = new ProfileContext(Profiles::SSO_SP_SEND_AUTHN_REQUEST, ProfileContext::ROLE_SP);
+        $context->getHttpRequestContext()->setRequest($request = new Request());
+
+        $bindingFactory->expects($this->once())
+            ->method('detectBindingType')
+            ->with($request)
+            ->willReturn($bindingType = SamlConstants::BINDING_SAML2_HTTP_ARTIFACT)
+        ;
+        $logger->expects($this->once())
+            ->method('debug')
+            ->with('Detected binding type: urn:oasis:names:tc:SAML:2.0:bindings:HTTP-Artifact', $this->isType('array'))
+        ;
+
+        $exchangeArtifactActionBuilder->expects($this->once())
+            ->method('execute')
+            ->with($context)
+        ;
+
+        $action->execute($context);
+
+        $this->assertEquals($bindingType, $context->getInboundContext()->getBindingType());
+    }
+
+    public function test_receives_message_using_post_binding()
+    {
+        $action = new ReceiveMessageAction(
+            $logger = TestHelper::getLoggerMock($this),
+            $bindingFactory = $this->getBindingFactoryMock(),
+            $exchangeArtifactActionBuilder = $this->getExchengeArtifactForResponseActionBuilderMock()
+        );
 
         $context = new ProfileContext(Profiles::SSO_SP_SEND_AUTHN_REQUEST, ProfileContext::ROLE_SP);
         $context->getHttpRequestContext()->setRequest($request = new Request());
@@ -89,5 +133,10 @@ class ReceiveMessageActionTest extends \PHPUnit_Framework_TestCase
     private function getBindingFactoryMock()
     {
         return $this->getMock(BindingFactoryInterface::class);
+    }
+
+    private function getExchengeArtifactForResponseActionBuilderMock()
+    {
+        return $this->getMockBuilder(ActionInterface::class)->disableOriginalConstructor()->getMock();
     }
 }

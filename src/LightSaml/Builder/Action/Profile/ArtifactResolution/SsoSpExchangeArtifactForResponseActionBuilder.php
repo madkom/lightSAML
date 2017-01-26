@@ -12,7 +12,6 @@ use LightSaml\Action\Profile\Inbound\Message\ExtractWrappedMessageFromArtifactRe
 use LightSaml\Action\Profile\Inbound\Message\IssuerValidatorAction;
 use LightSaml\Action\Profile\Inbound\Message\MessageSignatureValidatorAction;
 use LightSaml\Action\Profile\Inbound\Message\ReceiveArtifactAction;
-use LightSaml\Action\Profile\Inbound\Response\ValidatorAction;
 use LightSaml\Action\Profile\Inbound\StatusResponse\InResponseToValidatorAction;
 use LightSaml\Action\Profile\Inbound\StatusResponse\StatusAction;
 use LightSaml\Action\Profile\Outbound\ArtifactResolution\CreateArtifactResolveAction;
@@ -25,33 +24,17 @@ use LightSaml\Action\Profile\Outbound\Message\MessageVersionAction;
 use LightSaml\Action\Profile\Outbound\Message\ResolveEndpointArsAction;
 use LightSaml\Action\Profile\Outbound\Message\SaveRequestStateAction;
 use LightSaml\Action\Profile\Outbound\Message\SignMessageAction;
-use LightSaml\Build\Container\BuildContainerInterface;
-use LightSaml\Builder\Action\ActionBuilderInterface;
 use LightSaml\Builder\Action\Profile\AbstractProfileActionBuilder;
 use LightSaml\Event\Events;
 use LightSaml\SamlConstants;
 
-class SsoSpArtifactResolveResponseActionBuilder extends AbstractProfileActionBuilder
+class SsoSpExchangeArtifactForResponseActionBuilder extends AbstractProfileActionBuilder
 {
-    /** @var ActionBuilderInterface */
-    private $responseValidatorActionBuilder;
-
-    /**
-     * @param BuildContainerInterface $buildContainer
-     * @param ActionBuilderInterface  $responseValidatorActionBuilder
-     */
-    public function __construct(BuildContainerInterface $buildContainer, ActionBuilderInterface $responseValidatorActionBuilder)
-    {
-        parent::__construct($buildContainer);
-
-        $this->responseValidatorActionBuilder = $responseValidatorActionBuilder;
-    }
-
     protected function doInitialize()
     {
         $this->add(new ReceiveArtifactAction(
             $this->buildContainer->getSystemContainer()->getLogger(),
-            $this->buildContainer->getServiceContainer()->getBindingFactory()
+            $this->buildContainer->getServiceContainer()->getBindingFactory()->create(SamlConstants::BINDING_SAML2_HTTP_ARTIFACT)
         ), 100);
         $this->add(new DetectEntityDescriptor(
             $this->buildContainer->getSystemContainer()->getLogger(),
@@ -102,7 +85,7 @@ class SsoSpArtifactResolveResponseActionBuilder extends AbstractProfileActionBui
         $this->add(new IssuerValidatorAction(
             $this->buildContainer->getSystemContainer()->getLogger(),
             $this->buildContainer->getServiceContainer()->getNameIdValidator(),
-            null //pz does not response format
+            null
         ));
         $this->add(new StatusAction(
             $this->buildContainer->getSystemContainer()->getLogger()
@@ -119,12 +102,6 @@ class SsoSpArtifactResolveResponseActionBuilder extends AbstractProfileActionBui
         //extract Response from ArtifactResponse
         $this->add(new ExtractWrappedMessageFromArtifactResponse(
             $this->buildContainer->getSystemContainer()->getLogger()
-        ));
-
-        // Response validation
-        $this->add(new ValidatorAction(
-            $this->buildContainer->getSystemContainer()->getLogger(),
-            $this->responseValidatorActionBuilder->build()
         ));
     }
 }
