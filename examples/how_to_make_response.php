@@ -5,6 +5,7 @@ require_once __DIR__.'/../autoload.php';
 $response = new \LightSaml\Model\Protocol\Response();
 $response
     ->addAssertion($assertion = new \LightSaml\Model\Assertion\Assertion())
+    ->setStatus(new \LightSaml\Model\Protocol\Status(new \LightSaml\Model\Protocol\StatusCode(\LightSaml\SamlConstants::STATUS_SUCCESS)))
     ->setID(\LightSaml\Helper::generateID())
     ->setIssueInstant(new \DateTime())
     ->setDestination('https://sp.com/acs')
@@ -53,8 +54,7 @@ $assertion
     )
 ;
 
-
-$expectedXmlOutput = <<<EOT
+$expectedXmlOutput = <<<'EOT'
 <samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ID="_8a3904146809db7b19d4eaaba9876baed805c216e5" Version="2.0"
 IssueInstant="2015-10-18T20:02:55Z" Destination="https://sp.com/acs">
   <saml:Issuer xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion">https://idp.com</saml:Issuer>

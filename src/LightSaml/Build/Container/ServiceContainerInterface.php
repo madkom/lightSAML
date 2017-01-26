@@ -15,7 +15,7 @@ use LightSaml\Model\Protocol\ArtifactGenerator;
 use LightSaml\Binding\BindingFactoryInterface;
 use LightSaml\Resolver\Credential\CredentialResolverInterface;
 use LightSaml\Resolver\Endpoint\EndpointResolverInterface;
-use LightSaml\Resolver\Logout\LogoutSessionResolverInterface;
+use LightSaml\Logout\Resolver\Logout\LogoutSessionResolverInterface;
 use LightSaml\Resolver\Session\SessionProcessorInterface;
 use LightSaml\Resolver\Signature\SignatureResolverInterface;
 use LightSaml\Validator\Model\Assertion\AssertionTimeValidator;
