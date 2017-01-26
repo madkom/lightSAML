@@ -7,7 +7,7 @@
  */
 namespace LightSaml\Store\Artifact;
 
-use LightSaml\Binding\Artifact;
+use LightSaml\Model\Protocol\Artifact;
 use LightSaml\Model\Protocol\SamlMessage;
 
 interface ArtifactStoreInterface
