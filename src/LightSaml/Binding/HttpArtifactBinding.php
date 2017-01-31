@@ -7,6 +7,7 @@
  */
 namespace LightSaml\Binding;
 
+use LightSaml\Context\Profile\Helper\ArtifactHelper;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Error\LightSamlBindingException;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,6 +62,6 @@ class HttpArtifactBinding extends AbstractBinding
             $context->setRelayState($relayState);
         }
 
-        $context->setArtifact($context->getProfileContext()->getArtifactContext()->getGenerator()->generateFromString($artifact));
+        $context->setArtifact(ArtifactHelper::generateFromString($artifact));
     }
 }

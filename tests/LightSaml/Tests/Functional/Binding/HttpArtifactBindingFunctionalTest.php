@@ -7,7 +7,6 @@ use LightSaml\Model\Protocol\Artifact;
 use LightSaml\Binding\HttpArtifactBinding;
 use LightSaml\Context\Profile\MessageContext;
 use LightSaml\Event\Events;
-use LightSaml\Model\Protocol\ArtifactGenerator;
 use Symfony\Component\EventDispatcher\GenericEvent;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -18,7 +17,7 @@ class HttpArtifactBindingFunctionalTest extends \PHPUnit_Framework_TestCase
         $expectedRelayState = 'relayState';
         $expectedDestination = 'https://destination.com/auth';
 
-        $expectedArtifact = new Artifact('0004', '0000', sha1('http://testsp.com'), bin2hex(openssl_random_pseudo_bytes(20)));
+        $expectedArtifact = new Artifact(0, sha1('http://testsp.com'), bin2hex(openssl_random_pseudo_bytes(20)));
 
         $messageContext = new MessageContext();
         $messageContext->setRelayState($expectedRelayState);
@@ -59,7 +58,7 @@ class HttpArtifactBindingFunctionalTest extends \PHPUnit_Framework_TestCase
     public function test_receive_authn_request()
     {
         $expectedRelayState = 'relayState';
-        $expectedArtifact = new Artifact('0004', '0000', sha1('http://testsp.com'), bin2hex(openssl_random_pseudo_bytes(20)));
+        $expectedArtifact = new Artifact(0, sha1('http://testsp.com'), bin2hex(openssl_random_pseudo_bytes(20)));
 
         $request = new Request();
         $request->setMethod('POST');
@@ -83,7 +82,6 @@ class HttpArtifactBindingFunctionalTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($eventDispatcherMock, $binding->getEventDispatcher());
 
         $profileContext = new ProfileContext('test', ProfileContext::ROLE_SP);
-        $profileContext->getArtifactContext()->setGenerator(new ArtifactGenerator());
 
         $messageContext = new MessageContext();
         $messageContext->setParent($profileContext);

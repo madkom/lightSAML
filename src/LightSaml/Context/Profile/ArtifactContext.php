@@ -11,7 +11,6 @@
 
 namespace LightSaml\Context\Profile;
 
-use LightSaml\Model\Protocol\ArtifactGenerator;
 use LightSaml\Store\Artifact\ArtifactStoreInterface;
 
 class ArtifactContext extends AbstractProfileContext
@@ -20,11 +19,6 @@ class ArtifactContext extends AbstractProfileContext
      * @var ArtifactStoreInterface
      */
     private $store;
-
-    /**
-     * @var ArtifactGenerator
-     */
-    private $generator;
 
     /**
      * @return ArtifactStoreInterface
@@ -40,21 +34,5 @@ class ArtifactContext extends AbstractProfileContext
     public function setStore(ArtifactStoreInterface $store)
     {
         $this->store = $store;
-    }
-
-    /**
-     * @return ArtifactGenerator
-     */
-    public function getGenerator()
-    {
-        return $this->generator;
-    }
-
-    /**
-     * @param ArtifactGenerator $generator
-     */
-    public function setGenerator(ArtifactGenerator $generator)
-    {
-        $this->generator = $generator;
     }
 }

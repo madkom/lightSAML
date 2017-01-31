@@ -16,7 +16,6 @@ use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpReceiveResponseActionB
 use LightSaml\Builder\Action\Profile\SingleSignOn\Sp\SsoSpValidateAssertionActionBuilder;
 use LightSaml\Builder\Profile\AbstractProfileBuilder;
 use LightSaml\Context\Profile\ProfileContext;
-use LightSaml\Model\Protocol\ArtifactGenerator;
 use LightSaml\Profile\Profiles;
 
 class SsoSpReceiveResponseProfileBuilder extends AbstractProfileBuilder
@@ -49,14 +48,5 @@ class SsoSpReceiveResponseProfileBuilder extends AbstractProfileBuilder
         );
 
         return $result;
-    }
-
-    public function buildContext()
-    {
-        $profileContext = parent::buildContext();
-
-        $profileContext->getArtifactContext()->setGenerator(new ArtifactGenerator());
-
-        return $profileContext;
     }
 }

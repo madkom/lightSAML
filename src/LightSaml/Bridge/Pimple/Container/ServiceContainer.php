@@ -11,7 +11,6 @@
 
 namespace LightSaml\Bridge\Pimple\Container;
 
-use LightSaml\Model\Protocol\ArtifactGenerator;
 use LightSaml\Binding\BindingFactoryInterface;
 use LightSaml\Build\Container\ServiceContainerInterface;
 use LightSaml\Resolver\Credential\CredentialResolverInterface;
@@ -116,13 +115,5 @@ class ServiceContainer extends AbstractPimpleContainer implements ServiceContain
     public function getSessionProcessor()
     {
         return $this->pimple[self::SESSION_PROCESSOR];
-    }
-
-    /**
-     * @return ArtifactGenerator
-     */
-    public function getArtifactGenerator()
-    {
-        return $this->pimple[self::ARTIFACT_GENERATOR];
     }
 }
