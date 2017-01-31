@@ -9,13 +9,10 @@ namespace LightSaml\Model\Protocol;
 
 class Artifact
 {
-    /**
-     * @var string
-     */
-    private $typeCode;
+    const TYPE_CODE = 4;
 
     /**
-     * @var string
+     * @var int
      */
     private $endpointIndex;
 
@@ -32,14 +29,12 @@ class Artifact
     /**
      * Artifact constructor.
      *
-     * @param string $typeCode
-     * @param string $endpointIndex
+     * @param int    $endpointIndex
      * @param string $sourceId
      * @param string $messageHandle
      */
-    public function __construct($typeCode, $endpointIndex, $sourceId, $messageHandle)
+    public function __construct($endpointIndex, $sourceId, $messageHandle)
     {
-        $this->typeCode = $typeCode;
         $this->endpointIndex = $endpointIndex;
         $this->sourceId = $sourceId;
         $this->messageHandle = $messageHandle;
@@ -50,11 +45,16 @@ class Artifact
      */
     public function __toString()
     {
-        return base64_encode(hex2bin($this->typeCode.$this->endpointIndex.$this->sourceId.$this->messageHandle));
+        return base64_encode(hex2bin(
+            str_pad(dechex(self::TYPE_CODE), 4, 0, STR_PAD_LEFT).
+            str_pad(dechex($this->endpointIndex), 4, 0, STR_PAD_LEFT).
+            $this->sourceId.
+            $this->messageHandle
+        ));
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getEndpointIndex()
     {
